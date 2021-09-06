@@ -1,11 +1,35 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/extensions */
 import Layout from '../components/layout';
+import styles from '../styles/Blog.module.css';
 
-export default function blog() {
+interface Post {
+  id: number;
+  title: string;
+  body: string;
+}
+
+interface BlogProps {
+  dataBolg: Post[];
+}
+export default function Blog(props: BlogProps) {
+  const { dataBolg } = props;
   return (
     <Layout pageTitle="Blog Page">
-      <p className="title">Blog Page</p>
+      {dataBolg.map((blog) => (
+        <div key={blog.id} className={styles.card}>
+          <h3>{blog.title}</h3>
+          <p>{blog.body}</p>
+        </div>
+      ))}
     </Layout>
   );
+}
+
+export async function getServerSideProps() {
+  const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+  const dataBolg = await res.json();
+  return {
+    props: {
+      dataBolg,
+    },
+  };
 }
